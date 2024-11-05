@@ -7,23 +7,49 @@
 
 import UIKit
 
-class ResultViewController: UIViewController {
-
+final class ResultViewController: UIViewController {
+    
+    @IBOutlet var animalLabel: UILabel!
+    @IBOutlet var descriptionLabel: UILabel!
+    
+    var answersUser: [Answer] = []
+    var answersUserForTypeAndCount: [Animal: Int] = [:]
+    var animalForUser = Animal(rawValue: "🐙")
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+        navigationItem.setHidesBackButton(true, animated: false)
+        
+        getAnimalForUser()
+        
+        animalLabel.text = "Вы - \(animalForUser?.rawValue ?? Animal.cat.rawValue)"
+        descriptionLabel.text = "\(animalForUser?.definition ?? Animal.cat.definition)"
+        
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    
+    @IBAction func doneButtonAction(_ sender: UIBarButtonItem) {
+        dismiss(animated: true)
     }
-    */
-
+    
+    deinit {
+        print("\(type(of: self)) has been deallocated")
+    }
+    
+    private func getAnimalForUser() {
+        for answerChoose in answersUser {
+            answersUserForTypeAndCount[answerChoose.animal, default: 0] += 1
+        }
+        
+        let maximumValue = answersUserForTypeAndCount.values.max()!
+        
+        for answer in answersUserForTypeAndCount {
+            if answer.value == maximumValue {
+                animalForUser = answer.key
+            }
+        }
+    }
+    
 }
